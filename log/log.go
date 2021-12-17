@@ -4,6 +4,7 @@ import (
 	"io"
 	"os"
 	"reflect"
+	"time"
 
 	"github.com/rs/zerolog"
 )
@@ -22,15 +23,23 @@ const (
 	NameModuleB = "module-b"
 )
 
-var (
-	writer = &Writer{
-		Out: os.Stderr,
-	}
-)
-
 // global
 var Logger = zerolog.New(writer).With().Timestamp().Logger()
 var ConsoleWriter = zerolog.ConsoleWriter{Out: os.Stdout}
+
+var (
+	writer            = &Writer{Out: os.Stderr}
+	defaultLevel      = DEBUG_LEVEL
+	defaultWriter     = ConsoleWriter
+	defaultTimeFormat = time.RFC3339
+)
+
+// default config
+func init() {
+	SetLevel(defaultLevel)
+	SetWriter(defaultWriter)
+	SetTimeFormat(defaultTimeFormat)
+}
 
 func SetLevel(lv zerolog.Level) {
 	Logger = Logger.Level(lv)
